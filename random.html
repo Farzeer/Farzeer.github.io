@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+
+<html>
+	<head>
+		<title>WWW Project - Home</title>
+		<link rel="stylesheet" href="css/site.css">
+	</head>
+	
+	<body>
+		<div class="container">
+			<header>	<!-- Header -->
+				<nav>
+					<ul>
+						<li><a href="index.html">Home</a></li>
+						<li><a href="games.html">Games</a></li>
+						<li><a href="media.html">Media</a></li>
+						<li><a href="random.html">Random</a></li>
+					</ul>
+				</nav>
+				<div><img src="images/banner.jpg" class="bordered-image" width="600"/></div>
+			</header>
+			
+			<section id="main">	<!-- Main Section -->
+				<h1>This is my random page! It includes all kinds of random stuff such as drag and drop feature!</h1>
+				<h3>Drag 'n Drop</h3>
+				<div id="div1" ondrop="drop(event)" ondragover="allowDrop(event)">
+					<img src="images/drag1.jpg" draggable="true" ondragstart="drag(event)" id="drag1" width="64" height="64">
+				</div>
+				<div id="div2" ondrop="drop(event)" ondragover="allowDrop(event)"></div><br>
+				<h3>Geolocation</h3>
+				<p>Click the button to get your coordinates</p>
+				<button onClick="getLocation()">Get Coordinates</button>
+				<p id="loc">Latitude: <br>Longitude: </p>
+				<div id="map"></div>
+				<h3>Input validation</h3>
+				<p>Please input a number between 1 and 100</p>
+				<input id="num">
+				<button onclick="validateForm()">Submit</button>
+				<p id="numberOutput"></p>
+			</section>
+			
+			<footer>	<!-- Footer -->
+				<p>Farzeer &copy;<script type="text/javascript">var ct=new Date(); document.write(ct.getFullYear());</script></p>
+			</footer>
+		</div>
+		<script type="text/javascript" src="js/random.js"></script>
+	</body>
+</html>

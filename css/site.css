@@ -1,0 +1,116 @@
+header, footer {
+	background-color: #212121;
+	border: solid 1px black;
+}
+
+footer {
+	padding: 10px;
+	border-radius: 3px;
+	text-align: center;
+}
+	
+body {
+	font-family: Segoe UI, Arial, Helvetica, sans-serif;
+	font-size: 14px;
+	background-color: darkgray;
+}
+
+a {
+	background-color: lightgray;
+    color: black;
+    text-align: center; 
+    padding: 1px 3px;
+    text-decoration: none;
+    display: inline-block;
+	border: solid 1px black;
+	margin: 1px;
+}
+
+html, body {
+	padding: 0;
+	margin: 0;
+}
+
+.bordered-image {
+	border: solid 1px #444;
+	border-radius: 2px;
+}
+
+#main {
+	border: solid 1px #ccc;
+	border-radius: 5px;
+	color: #202020;
+	margin: 20px 5px;
+	padding: 5px;
+}
+
+#results {
+	padding: 2px;
+	width: 600px;
+	display: inline-block;
+	vertical-align: top;
+}
+
+#div1, #div2 {
+    width: 80px;
+    height: 72px;
+    margin: 10px;
+    padding: 10px;
+    border: 1px solid black;
+}
+
+.simple-form {
+	padding: 2px;
+	width: 300px;
+	display: inline-block;
+	vertical-align: top;
+}
+
+.simple-form label {
+	font-weight: bold;
+}
+
+.simple-form input[type=text],
+.simple-form select {
+	width: 150px;
+}
+
+.simple-form input[type=submit] {
+	background-color: green;
+	color: white;
+	border-radius: 15px;
+	padding: 3px;
+	margin-top: 5px;
+}
+
+.container {
+	width: 989px;
+	margin: 0 auto;
+	background-color: white;
+	padding: 5px;
+}
+
+table, th, td {
+	border: 1px solid black;
+	border-collapse: collapse;
+}
+
+th {
+	background-color: darkgray;
+}
+
+td {
+	text-align: center;
+}
+
+header nav {
+	float: right;
+	margin-right: 5px;
+}
+
+header nav li {
+	display: inline;
+	padding: 5px;
+	font-size: 18px;
+	color: white;
+}
