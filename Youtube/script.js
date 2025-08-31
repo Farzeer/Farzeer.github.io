@@ -113,7 +113,7 @@ async function fetchPlaylistVideos(playlistId, apiKey) {
   return ids;
 }
 
-async function loadPlaylist(playlistId, apiKey, force = false) {
+async function loadPlaylist(playlistInput, apiKey, force = false) {
   const playlistId = extractPlaylistId(playlistInput);
   const statusEl = document.getElementById('status');
   const cacheKey = `playlist_${playlistId}`;
@@ -193,3 +193,4 @@ window.addEventListener('DOMContentLoaded', () => {
   }
   updateDropdown();
 });
+
