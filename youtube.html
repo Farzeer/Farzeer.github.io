@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Youtube Randomizer</title>
+</head>
+<body>
+  <h1>Youtube Randomizer</h1>
+  <input id="apiKey" placeholder="Enter YouTube API key">
+  <input id="playlistId" placeholder="Enter YouTube Playlist ID">
+  <button id="loadPlaylist">Load & Shuffle Playlist</button>
+  <button id="refreshPlaylist">Force Refresh (use only when necessary)</button>
+  <div id="status"></div>
+  <div id="player"></div>
+
+  <!-- Custom playback controls -->
+  <div id="controls" style="margin-top:10px;">
+    <button id="prevVideo">Previous</button>
+    <button id="nextVideo">Next</button>
+  </div>
+
+  <script src="https://www.youtube.com/iframe_api"></script>
+  <script src="config.js"></script>
+  <script src="script.js"></script>
+
+  <!-- Load YouTube IFrame API -->
+  <script src="https://www.youtube.com/iframe_api"></script>
+  <!-- Load config first -->
+  <script src="config.js"></script>
+  <!-- Main script -->
+  <script src="script.js"></script>
+</body>
+</html>
