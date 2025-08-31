@@ -36,7 +36,8 @@ function onYouTubeIframeAPIReady() {
         const iframe = player.getIframe();
         iframe.setAttribute('referrerpolicy', 'no-referrer-when-downgrade');
       },
-      'onStateChange': onPlayerStateChange
+      'onStateChange': onPlayerStateChange,
+      'onError': onPlayerError
     }
   });
 }
@@ -44,6 +45,16 @@ function onYouTubeIframeAPIReady() {
 function onPlayerStateChange(event) {
   if (event.data === YT.PlayerState.ENDED) {
     playNext();
+  }
+}
+
+function onPlayerError(event) {
+  const errorCode = event.data;
+  console.warn('Video playback error, skipping to next:', errorCode);
+  if (errorCode === 100 || errorCode === 101 || errorCode === 150) {
+    playNext();
+  } else {
+    alert(`YouTube Player Error: ${errorCode}`);
   }
 }
 
@@ -246,4 +257,5 @@ window.addEventListener('DOMContentLoaded', () => {
   }
   updateDropdown();
 });
+
 
