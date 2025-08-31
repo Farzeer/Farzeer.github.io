@@ -17,7 +17,18 @@
   <button id="refreshPlaylist">Force Refresh (use only when necessary)</button>
 
   <div id="status"></div>
-  <div id="player"></div>
+
+  <div id="main-container" style="display:flex; gap:10px;">
+    <!-- YouTube player -->
+    <div id="player-container" style="flex:3;">
+      <div id="player"></div>
+    </div>
+  
+    <!-- GIF container -->
+    <div id="gif-container" style="flex:1; display:flex; flex-direction:column; gap:10px;">
+      <!-- GIFs will be here hopefully -->
+    </div>
+  </div>
 
   <div id="controls" style="margin-top:10px;">
     <button id="prevVideo">Previous</button>
