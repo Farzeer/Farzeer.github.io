@@ -3,13 +3,19 @@
 <head>
   <meta charset="UTF-8">
   <title>Youtube Randomizer</title>
+  <style>
+  #controls { margin-top: 10px; }
+  #cachedPlaylists { margin-top: 10px; }
+  </style>
 </head>
 <body>
   <h1>Youtube Randomizer</h1>
+
   <input id="apiKey" placeholder="Enter YouTube API key">
-  <input id="playlistId" placeholder="Enter YouTube Playlist ID">
+  <input id="playlistId" placeholder="Enter YouTube Playlist URL or ID">
   <button id="loadPlaylist">Load & Shuffle Playlist</button>
   <button id="refreshPlaylist">Force Refresh (use only when necessary)</button>
+
   <div id="status"></div>
   <div id="player"></div>
 
@@ -18,8 +24,14 @@
     <button id="nextVideo">Next</button>
   </div>
 
+  <div>
+    <label for="cachedPlaylists">Switch Playlist:</label>
+    <select id="cachedPlaylists">
+      <option value="">-- Select cached playlist --</option>
+    </select>
+  </div>
+
   <script src="https://www.youtube.com/iframe_api"></script>
   <script src="/Youtube/script.js"></script>
 </body>
-
 </html>
