@@ -32,6 +32,7 @@ function onYouTubeIframeAPIReady() {
     playerVars: { controls: 1 }, // 0 to hide native YouTube controls
     events: {
       'onReady': () => {
+        playerReady = true;
         const iframe = player.getIframe();
         iframe.setAttribute('referrerpolicy', 'no-referrer-when-downgrade');
       },
@@ -114,8 +115,21 @@ async function fetchPlaylistVideos(playlistId, apiKey) {
 }
 
 async function loadPlaylist(playlistInput, apiKey, force = false) {
-  const playlistId = extractPlaylistId(playlistInput);
+  let playlistId = extractPlaylistId(playlistInput);
   const statusEl = document.getElementById('status');
+
+  if (!playerReady) {
+    statusEl.innerText = 'Waiting for player to initialize...';
+    await new Promise(resolve => {
+      const interval = setInterval(() => {
+        if (playerReady) {
+          clearInterval(interval);
+          resolve();
+        }
+      }, 50);
+    });
+  }
+
   const cacheKey = `playlist_${playlistId}`;
   const timestampKey = `playlist_${playlistId}_ts`;
 
@@ -193,4 +207,3 @@ window.addEventListener('DOMContentLoaded', () => {
   }
   updateDropdown();
 });
-
