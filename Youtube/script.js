@@ -59,10 +59,25 @@ function playPrev() {
   player.loadVideoById(videoIds[currentIndex]);
 }
 
-function addPlaylistToRegistry(playlistId) {
+async function fetchPlaylistTitle(playlistId, apiKey) {
+  try {
+    const url = `https://www.googleapis.com/youtube/v3/playlists?part=snippet&id=${playlistId}&key=${apiKey}`;
+    const res = await fetch(url);
+    const data = await res.json();
+    if (data.error) throw new Error(data.error.message);
+    if (!data.items || !data.items.length) return playlistId;
+    return data.items[0].snippet.title;
+  } catch (err) {
+    console.warn('Could not fetch playlist title:', err.message);
+    return playlistId;
+  }
+}
+
+async function addPlaylistToRegistry(playlistId, apiKey) {
   const registry = JSON.parse(localStorage.getItem(REGISTRY_KEY) || '[]');
-  if (!registry.includes(playlistId)) {
-    registry.push(playlistId);
+  if (!registry.find(p => p.id === playlistId)) {
+    const title = await fetchPlaylistTitle(playlistId, apiKey);
+    registry.push({ id: playlistId, title });
     localStorage.setItem(REGISTRY_KEY, JSON.stringify(registry));
     updateDropdown();
   }
@@ -75,10 +90,10 @@ function getCachedPlaylists() {
 function updateDropdown() {
   const dropdown = document.getElementById('cachedPlaylists');
   dropdown.innerHTML = '<option value="">-- Select cached playlist --</option>';
-  getCachedPlaylists().forEach(id => {
+  getCachedPlaylists().forEach(p => {
     const option = document.createElement('option');
-    option.value = id;
-    option.textContent = id;
+    option.value = p.id;
+    option.textContent = p.title;
     dropdown.appendChild(option);
   });
 }
@@ -165,15 +180,18 @@ async function loadPlaylist(playlistInput, apiKey, force = false) {
 }
 
 // Event listeners
-document.getElementById('loadPlaylist').addEventListener('click', () => {
+document.getElementById('loadPlaylist').addEventListener('click', async () => {
   const apiKeyInput = document.getElementById('apiKey');
   const apiKey = apiKeyInput.value.trim();
-  const playlistId = document.getElementById('playlistId').value.trim();
+  const playlistInput  = document.getElementById('playlistId').value.trim();
 
   if (!apiKey) return alert('Enter your API key');
-  if (!playlistId) return alert('Enter a playlist URL or ID');
+  if (!playlistInput ) return alert('Enter a playlist URL or ID');
   
   localStorage.setItem(API_KEY_STORAGE, apiKey);
+  const playlistId = extractPlaylistId(playlistInput);
+
+  await addPlaylistToRegistry(playlistId, apiKey);
 
   loadPlaylist(playlistId, apiKey);
 });
