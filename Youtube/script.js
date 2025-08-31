@@ -50,18 +50,27 @@ async function fetchPlaylistVideos(playlistId, apiKey) {
   const maxResults = 50;
 
   while (true) {
-    const url = `https://www.googleapis.com/youtube/v3/playlistItems?part=contentDetails&maxResults=${maxResults}&playlistId=${playlistId}&pageToken=${nextPage}&key=${apiKey}`;
-    const res = await fetch(url);
-    const data = await res.json();
+    try {
+      const url = `https://www.googleapis.com/youtube/v3/playlistItems?part=contentDetails&maxResults=${maxResults}&playlistId=${playlistId}&pageToken=${nextPage}&key=${apiKey}`;
+      const res = await fetch(url);
+      const data = await res.json();
 
-    if (data.error) throw new Error(data.error.message);
+      if (data.error) throw new Error(data.error.message);
 
-    data.items.forEach(item => ids.push(item.contentDetails.videoId));
+      // Check for video availability? Maybe fixing random errors I've been having with large playlists
+      data.items.forEach(item => {
+        if (item && item.contentDetails && item.contentDetails.videoId) {
+          ids.push(item.contentDetails.videoId);
+        }
+      });
 
     if (!data.nextPageToken) break;
     nextPage = data.nextPageToken;
+  } catch (err) {
+      console.warn('Skipping a page due to error:', err.message);
+      break; // stop fetching if an unexpected error occurs
+    }
   }
-
   return ids;
 }
 
@@ -121,4 +130,5 @@ document.getElementById('refreshPlaylist').addEventListener('click', () => {
 });
 
 document.getElementById('nextVideo').addEventListener('click', playNext);
+
 document.getElementById('prevVideo').addEventListener('click', playPrev);
