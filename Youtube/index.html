@@ -22,17 +22,17 @@
     <!-- YouTube player -->
     <div id="player-container" style="flex:3;">
       <div id="player"></div>
+      
+      <div id="controls" style="margin-top:10px;">
+      <button id="prevVideo">Previous</button>
+      <button id="nextVideo">Next</button>
+      </div>
     </div>
   
     <!-- GIF container -->
-    <div id="gif-container" style="flex:1; display:flex; flex-direction:column; gap:10px;">
+    <div id="gif-container" style="flex:1; display:flex; flex-direction:column; gap:10px; max-height:720px; overflow:hidden;">
       <!-- GIFs will be here hopefully -->
     </div>
-  </div>
-
-  <div id="controls" style="margin-top:10px;">
-    <button id="prevVideo">Previous</button>
-    <button id="nextVideo">Next</button>
   </div>
 
   <div>
@@ -46,3 +46,4 @@
   <script src="/Youtube/script.js"></script>
 </body>
 </html>
+
