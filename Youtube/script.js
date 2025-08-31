@@ -98,6 +98,25 @@ function updateDropdown() {
   });
 }
 
+function showGIFs() {
+  const gifContainer = document.getElementById('gif-container');
+  if (!gifContainer) return;
+  gifContainer.innerHTML = `
+    <div class="tenor-gif-embed" data-postid="18110512" data-share-method="host" data-aspect-ratio="1.77778" data-width="100%">
+      <a href="https://tenor.com/view/cat-jam-gif-18110512">Cat Jam GIF</a> from <a href="https://tenor.com/search/cat-gifs">Cat GIFs</a>
+    </div>
+    <div class="tenor-gif-embed" data-postid="16989864924126703156" data-share-method="host" data-aspect-ratio="0.797189" data-width="100%">
+      <a href="https://tenor.com/view/catjam-cat-disco-catjamming-gif-16989864924126703156">Catjam Disco GIF</a> from <a href="https://tenor.com/search/catjam-gifs">Catjam GIFs</a>
+    </div>
+  `;
+
+  // Load Tenor script to render embeds
+  const tenorScript = document.createElement('script');
+  tenorScript.src = "https://tenor.com/embed.js";
+  tenorScript.async = true;
+  document.body.appendChild(tenorScript);
+}
+
 async function fetchPlaylistVideos(playlistId, apiKey) {
   let ids = [];
   let nextPage = '';
@@ -157,7 +176,8 @@ async function loadPlaylist(playlistInput, apiKey, force = false) {
     currentIndex = 0;
     statusEl.innerText = `Loaded ${videoIds.length} videos from cache. Playing first video.`;
     player.loadVideoById(videoIds[currentIndex]);
-    addPlaylistToRegistry(playlistId);
+    addPlaylistToRegistry(playlistId, apiKey);
+    showGIFs(); // Display the GIFs
     return;
   }
 
@@ -168,36 +188,16 @@ async function loadPlaylist(playlistInput, apiKey, force = false) {
 
     localStorage.setItem(cacheKey, JSON.stringify(videoIds));
     localStorage.setItem(timestampKey, Date.now());
-    addPlaylistToRegistry(playlistId);
+    addPlaylistToRegistry(playlistId, apiKey);
 
     shuffle(videoIds);
     currentIndex = 0;
     statusEl.innerText = `Fetched ${videoIds.length} videos. Playing first video.`;
     player.loadVideoById(videoIds[currentIndex]);
+    showGIFs(); // Display the GIFs
   } catch (err) {
     statusEl.innerText = `Error fetching playlist: ${err.message}`;
   }
-
-  player.loadVideoById(videoIds[currentIndex]);
-  showGIFs(); // Display the GIFs
-}
-
-function showGIFs() {
-  const gifContainer = document.getElementById('gif-container');
-  gifContainer.innerHTML = `
-    <div class="tenor-gif-embed" data-postid="18110512" data-share-method="host" data-aspect-ratio="1.77778" data-width="100%">
-      <a href="https://tenor.com/view/cat-jam-gif-18110512">Cat Jam GIF</a> from <a href="https://tenor.com/search/cat-gifs">Cat GIFs</a>
-    </div>
-    <div class="tenor-gif-embed" data-postid="16989864924126703156" data-share-method="host" data-aspect-ratio="0.797189" data-width="100%">
-      <a href="https://tenor.com/view/catjam-cat-disco-catjamming-gif-16989864924126703156">Catjam Disco GIF</a> from <a href="https://tenor.com/search/catjam-gifs">Catjam GIFs</a>
-    </div>
-  `;
-
-  // Load Tenor script to render embeds
-  const tenorScript = document.createElement('script');
-  tenorScript.src = "https://tenor.com/embed.js";
-  tenorScript.async = true;
-  document.body.appendChild(tenorScript);
 }
 
 // Event listeners
@@ -246,3 +246,4 @@ window.addEventListener('DOMContentLoaded', () => {
   }
   updateDropdown();
 });
+
