@@ -70,7 +70,6 @@ async function fetchPlaylistVideos(playlistId, apiKey) {
       console.warn('Skipping a page due to error:', err.message);
       break; // stop fetching if an unexpected error occurs
     }
-  }
   return ids;
 }
 
@@ -132,3 +131,4 @@ document.getElementById('refreshPlaylist').addEventListener('click', () => {
 document.getElementById('nextVideo').addEventListener('click', playNext);
 
 document.getElementById('prevVideo').addEventListener('click', playPrev);
+
