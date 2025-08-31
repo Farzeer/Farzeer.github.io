@@ -122,10 +122,14 @@ function showGIFs() {
   `;
 
   // Load Tenor script to render embeds
-  const tenorScript = document.createElement('script');
-  tenorScript.src = "https://tenor.com/embed.js";
-  tenorScript.async = true;
-  document.body.appendChild(tenorScript);
+  if (window.TenorEmbed) {
+    TenorEmbed.load();
+  } else {
+    const tenorScript = document.createElement('script');
+    tenorScript.src = "https://tenor.com/embed.js";
+    tenorScript.async = true;
+    document.body.appendChild(tenorScript);
+  }
 }
 
 async function fetchPlaylistVideos(playlistId, apiKey) {
@@ -257,5 +261,6 @@ window.addEventListener('DOMContentLoaded', () => {
   }
   updateDropdown();
 });
+
 
 
