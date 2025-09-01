@@ -4,6 +4,17 @@ let currentIndex = 0;
 const CACHE_DURATION = 24 * 60 * 60 * 1000; // 24 hours
 const REGISTRY_KEY = 'playlist_registry';
 const API_KEY_STORAGE = 'youtube_api_key';
+let lastActionTime = 0;
+const ACTION_DELAY = 1000; // ms
+
+function canTriggerAction() {
+  const now = Date.now();
+  if (now - lastActionTime >= ACTION_DELAY) {
+    lastActionTime = now;
+    return true;
+  }
+  return false;
+}
 
 function shuffle(array) {
   for (let i = array.length - 1; i > 0; i--) {
@@ -253,9 +264,9 @@ window.addEventListener('keydown', (e) => {
   if (!isPlayerReady()) return;
   
   if (e.code === 'ArrowRight') {
-    playNext();
+    if (canTriggerAction()) playNext();
   } else if (e.code === 'ArrowLeft') {
-    playPrev();
+    if (canTriggerAction()) playPrev();
   } else if (e.code === 'Space') {
     const state = player.getPlayerState();
     if (state === YT.PlayerState.PLAYING) {
@@ -276,10 +287,10 @@ if ('mediaSession' in navigator) {
     if (isPlayerReady()) player.pauseVideo();
   });
   navigator.mediaSession.setActionHandler('previoustrack', () => {
-    if (isPlayerReady()) playPrev();
+    if (isPlayerReady() && canTriggerAction()) playPrev();
   });
   navigator.mediaSession.setActionHandler('nexttrack', () => {
-    if (isPlayerReady()) playNext();
+    if (isPlayerReady() && canTriggerAction()) playNext();
   });
 }
 
@@ -299,6 +310,7 @@ window.addEventListener('DOMContentLoaded', () => {
   }
   updateDropdown();
 });
+
 
 
 
