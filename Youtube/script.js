@@ -260,11 +260,11 @@ window.addEventListener('keydown', (e) => {
     e.preventDefault(); // prevent page scrolling on space
   } 
   if ('mediaSession' in navigator) {
-  navigator.mediaSession.setActionHandler('play', () => player.playVideo());
-  navigator.mediaSession.setActionHandler('pause', () => player.pauseVideo());
-  navigator.mediaSession.setActionHandler('previoustrack', () => playPrev());
-  navigator.mediaSession.setActionHandler('nexttrack', () => playNext());
-}
+    navigator.mediaSession.setActionHandler('play', () => player.playVideo());
+    navigator.mediaSession.setActionHandler('pause', () => player.pauseVideo());
+    navigator.mediaSession.setActionHandler('previoustrack', () => playPrev());
+    navigator.mediaSession.setActionHandler('nexttrack', () => playNext());
+  }
 });
 
 document.getElementById('cachedPlaylists').addEventListener('change', (e) => {
@@ -283,6 +283,7 @@ window.addEventListener('DOMContentLoaded', () => {
   }
   updateDropdown();
 });
+
 
 
 
