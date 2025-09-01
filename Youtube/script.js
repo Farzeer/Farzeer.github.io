@@ -58,6 +58,10 @@ function onPlayerError(event) {
   }
 }
 
+function isPlayerReady() {
+  return (player && playerReady && typeof player.getPlayerState === 'function');
+}
+
 function playNext() {
   if (videoIds.length === 0) return;
   currentIndex = (currentIndex + 1) % videoIds.length;
@@ -246,6 +250,8 @@ document.getElementById('nextVideo').addEventListener('click', playNext);
 document.getElementById('prevVideo').addEventListener('click', playPrev);
 
 window.addEventListener('keydown', (e) => {
+  if (!isPlayerReady()) return;
+  
   if (e.code === 'ArrowRight') {
     playNext();
   } else if (e.code === 'ArrowLeft') {
@@ -258,14 +264,25 @@ window.addEventListener('keydown', (e) => {
       player.playVideo();
     }
     e.preventDefault(); // prevent page scrolling on space
-  } /*
-  if ('mediaSession' in navigator) {
-    navigator.mediaSession.setActionHandler('play', () => player.playVideo());
-    navigator.mediaSession.setActionHandler('pause', () => player.pauseVideo());
-    navigator.mediaSession.setActionHandler('previoustrack', () => playPrev());
-    navigator.mediaSession.setActionHandler('nexttrack', () => playNext());
-  }*/
+  } 
 });
+
+// Media keys
+if ('mediaSession' in navigator) {
+  navigator.mediaSession.setActionHandler('play', () => {
+    if (isPlayerReady()) player.playVideo();
+  });
+  navigator.mediaSession.setActionHandler('pause', () => {
+    if (isPlayerReady()) player.pauseVideo();
+  });
+  navigator.mediaSession.setActionHandler('previoustrack', () => {
+    if (isPlayerReady()) playPrev();
+  });
+  navigator.mediaSession.setActionHandler('nexttrack', () => {
+    if (isPlayerReady()) playNext();
+  });
+}
+
 document.getElementById('cachedPlaylists').addEventListener('change', (e) => {
   const apiKey = document.getElementById('apiKey').value.trim();
   const playlistId = e.target.value;
@@ -282,6 +299,7 @@ window.addEventListener('DOMContentLoaded', () => {
   }
   updateDropdown();
 });
+
 
 
 
