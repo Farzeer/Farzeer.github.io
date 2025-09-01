@@ -244,7 +244,7 @@ document.getElementById('refreshPlaylist').addEventListener('click', () => {
 
 document.getElementById('nextVideo').addEventListener('click', playNext);
 document.getElementById('prevVideo').addEventListener('click', playPrev);
-/*
+
 window.addEventListener('keydown', (e) => {
   if (e.code === 'ArrowRight') {
     playNext();
@@ -258,15 +258,14 @@ window.addEventListener('keydown', (e) => {
       player.playVideo();
     }
     e.preventDefault(); // prevent page scrolling on space
-  } 
+  } /*
   if ('mediaSession' in navigator) {
     navigator.mediaSession.setActionHandler('play', () => player.playVideo());
     navigator.mediaSession.setActionHandler('pause', () => player.pauseVideo());
     navigator.mediaSession.setActionHandler('previoustrack', () => playPrev());
     navigator.mediaSession.setActionHandler('nexttrack', () => playNext());
-  }
+  }*/
 });
-*/
 document.getElementById('cachedPlaylists').addEventListener('change', (e) => {
   const apiKey = document.getElementById('apiKey').value.trim();
   const playlistId = e.target.value;
@@ -283,6 +282,7 @@ window.addEventListener('DOMContentLoaded', () => {
   }
   updateDropdown();
 });
+
 
 
 
