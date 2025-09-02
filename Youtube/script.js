@@ -61,11 +61,14 @@ function onPlayerStateChange(event) {
 
 function onPlayerError(event) {
   const errorCode = event.data;
-  console.warn('Video playback error, skipping to next:', errorCode);
+  const failedVideoId = videoIds[currentIndex];
+
+  console.warn(`Video playback error (code: ${errorCode}) on video ID: ${failedVideoId}. Skipping to next.`);
+  
   if (errorCode === 100 || errorCode === 101 || errorCode === 150) {
     playNext();
   } else {
-    alert(`YouTube Player Error: ${errorCode}`);
+    alert(`YouTube Player Error (code: ${errorCode}) on video ID: ${failedVideoId}`);
   }
 }
 
@@ -310,6 +313,7 @@ window.addEventListener('DOMContentLoaded', () => {
   }
   updateDropdown();
 });
+
 
 
 
