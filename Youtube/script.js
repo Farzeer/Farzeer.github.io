@@ -1,5 +1,5 @@
 let player;
-let videoIds = [];
+let videos = [];
 let currentIndex = 0;
 const CACHE_DURATION = 24 * 60 * 60 * 1000; // 24 hours
 const REGISTRY_KEY = 'playlist_registry';
@@ -61,7 +61,7 @@ function onPlayerStateChange(event) {
 
 function onPlayerError(event) {
   const errorCode = event.data;
-  const failedVideoId = videoIds[currentIndex];
+  const failedVideoId = videos[currentIndex];
 
   console.warn(`Video playback error (code: ${errorCode}) on video ID: ${failedVideoId}. Skipping to next.`);
   
@@ -77,16 +77,16 @@ function isPlayerReady() {
 }
 
 function playNext() {
-  if (videoIds.length === 0) return;
-  currentIndex = (currentIndex + 1) % videoIds.length;
-  player.loadVideoById(videoIds[currentIndex].id);
+  if (videos.length === 0) return;
+  currentIndex = (currentIndex + 1) % videos.length;
+  player.loadVideoById(videos[currentIndex].id);
   updateNowPlaying();
 }
 
 function playPrev() {
-  if (videoIds.length === 0) return;
-  currentIndex = (currentIndex - 1 + videoIds.length) % videoIds.length;
-  player.loadVideoById(videoIds[currentIndex].id);
+  if (videos.length === 0) return;
+  currentIndex = (currentIndex - 1 + videos.length) % videos.length;
+  player.loadVideoById(videos[currentIndex].id);
   updateNowPlaying();
 }
 
@@ -131,12 +131,12 @@ function updateDropdown() {
 
 function updateNowPlaying() {
   const nowPlayingEl = document.getElementById('nowPlaying');
-  if (!videoIds.length) {
+  if (!videos.length) {
     nowPlayingEl.textContent = 'Currently playing: –';
     return;
   }
 
-  const current = videoIds[currentIndex];
+  const current = videos[currentIndex];
   const title = current?.title || 'Unknown Title';
   nowPlayingEl.textContent = `Currently playing: ${title}`;
 }
@@ -178,13 +178,12 @@ async function fetchPlaylistVideos(playlistId, apiKey) {
       if (data.error) throw new Error(data.error.message);
 
       data.items.forEach(item => {
-        if (item?.contentDetails?.videoId) {
-          videos.push({
-            id: item.contentDetails.videoId,
-            title: item.snippet?.title || 'Unknown Title'
-          });
-        }
-      });
+      const videoId = item?.contentDetails?.videoId;
+      const title = item?.snippet?.title;
+      if (videoId && title && title !== 'Private video' && title !== 'Deleted video') {
+        videos.push({ id: videoId, title });
+      }
+    });
 
       if (!data.nextPageToken) break;
       nextPage = data.nextPageToken;
@@ -200,7 +199,23 @@ async function fetchPlaylistVideos(playlistId, apiKey) {
 async function loadPlaylist(playlistInput, apiKey, force = false) {
   let playlistId = extractPlaylistId(playlistInput);
   const statusEl = document.getElementById('status');
+  const cacheKey = `playlist_${playlistId}`;
+  const timestampKey = `playlist_${playlistId}_ts`;
+  const cached = localStorage.getItem(cacheKey);
+  const cachedTime = parseInt(localStorage.getItem(timestampKey), 10);
 
+  if (!force && cached && cachedTime && Date.now() - cachedTime < CACHE_DURATION) {
+    videos = JSON.parse(cached);
+    shuffle(videos);
+    currentIndex = 0;
+    statusEl.innerText = `Loaded ${videos.length} videos from cache.`;
+    player.loadVideoById(videos[currentIndex].id);
+    updateNowPlaying();
+    addPlaylistToRegistry(playlistId, apiKey);
+    showGIFs(); // Display the GIFs
+    return;
+  }
+  
   if (!playerReady) {
     statusEl.innerText = 'Waiting for player to initialize...';
     await new Promise(resolve => {
@@ -213,41 +228,25 @@ async function loadPlaylist(playlistInput, apiKey, force = false) {
     });
   }
 
-  const cacheKey = `playlist_${playlistId}`;
-  const timestampKey = `playlist_${playlistId}_ts`;
-
-  const cached = localStorage.getItem(cacheKey);
-  const cachedTime = parseInt(localStorage.getItem(timestampKey), 10);
-
-  if (!force && cached && cachedTime && Date.now() - cachedTime < CACHE_DURATION) {
-    videoIds = JSON.parse(cached);
-    shuffle(videoIds);
-    currentIndex = 0;
-    statusEl.innerText = `Loaded ${videoIds.length} videos from cache. Playing first video.`;
-    player.loadVideoById(videoIds[currentIndex].id);
-    addPlaylistToRegistry(playlistId, apiKey);
-    showGIFs(); // Display the GIFs
-    return;
-  }
-
   statusEl.innerText = 'Fetching playlist...';
   try {
-    videoIds = await fetchPlaylistVideos(playlistId, apiKey);
-    if (videoIds.length === 0) return alert('No videos found.');
+    videos = await fetchPlaylistVideos(playlistId, apiKey);
+    if (videos.length === 0) return alert('No videos found.');
 
-    localStorage.setItem(cacheKey, JSON.stringify(videoIds));
+    localStorage.setItem(cacheKey, JSON.stringify(videos));
     localStorage.setItem(timestampKey, Date.now());
     addPlaylistToRegistry(playlistId, apiKey);
 
+    videoIds = videos;
     shuffle(videoIds);
     currentIndex = 0;
-    statusEl.innerText = `Fetched ${videoIds.length} videos. Playing first video.`;
-    player.loadVideoById(videoIds[currentIndex].id);
+    statusEl.innerText = `Fetched ${videos.length} videos.`;
+    player.loadVideoById(videos[currentIndex].id);
+    updateNowPlaying();
     showGIFs(); // Display the GIFs
   } catch (err) {
     statusEl.innerText = `Error fetching playlist: ${err.message}`;
   }
-  updateNowPlaying();
 }
 
 // Event listeners
@@ -330,6 +329,7 @@ window.addEventListener('DOMContentLoaded', () => {
   }
   updateDropdown();
 });
+
 
 
 
