@@ -79,14 +79,14 @@ function isPlayerReady() {
 function playNext() {
   if (videoIds.length === 0) return;
   currentIndex = (currentIndex + 1) % videoIds.length;
-  player.loadVideoById(videoIds[currentIndex]);
+  player.loadVideoById(videoIds[currentIndex].id);
   updateNowPlaying();
 }
 
 function playPrev() {
   if (videoIds.length === 0) return;
   currentIndex = (currentIndex - 1 + videoIds.length) % videoIds.length;
-  player.loadVideoById(videoIds[currentIndex]);
+  player.loadVideoById(videoIds[currentIndex].id);
   updateNowPlaying();
 }
 
@@ -177,10 +177,12 @@ async function fetchPlaylistVideos(playlistId, apiKey) {
 
       if (data.error) throw new Error(data.error.message);
 
-      // Check for video availability? Maybe fixing random errors I've been having with large playlists
       data.items.forEach(item => {
-        if (item && item.contentDetails && item.contentDetails.videoId) {
-          ids.push(item.contentDetails.videoId);
+        if (item?.contentDetails?.videoId) {
+          videos.push({
+            id: item.contentDetails.videoId,
+            title: item.snippet?.title || 'Unknown Title'
+          });
         }
       });
 
@@ -222,7 +224,7 @@ async function loadPlaylist(playlistInput, apiKey, force = false) {
     shuffle(videoIds);
     currentIndex = 0;
     statusEl.innerText = `Loaded ${videoIds.length} videos from cache. Playing first video.`;
-    player.loadVideoById(videoIds[currentIndex]);
+    player.loadVideoById(videoIds[currentIndex].id);
     addPlaylistToRegistry(playlistId, apiKey);
     showGIFs(); // Display the GIFs
     return;
@@ -240,7 +242,7 @@ async function loadPlaylist(playlistInput, apiKey, force = false) {
     shuffle(videoIds);
     currentIndex = 0;
     statusEl.innerText = `Fetched ${videoIds.length} videos. Playing first video.`;
-    player.loadVideoById(videoIds[currentIndex]);
+    player.loadVideoById(videoIds[currentIndex].id);
     showGIFs(); // Display the GIFs
   } catch (err) {
     statusEl.innerText = `Error fetching playlist: ${err.message}`;
@@ -328,6 +330,7 @@ window.addEventListener('DOMContentLoaded', () => {
   }
   updateDropdown();
 });
+
 
 
 
