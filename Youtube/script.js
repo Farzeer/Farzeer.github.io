@@ -80,12 +80,14 @@ function playNext() {
   if (videoIds.length === 0) return;
   currentIndex = (currentIndex + 1) % videoIds.length;
   player.loadVideoById(videoIds[currentIndex]);
+  updateNowPlaying();
 }
 
 function playPrev() {
   if (videoIds.length === 0) return;
   currentIndex = (currentIndex - 1 + videoIds.length) % videoIds.length;
   player.loadVideoById(videoIds[currentIndex]);
+  updateNowPlaying();
 }
 
 async function fetchPlaylistTitle(playlistId, apiKey) {
@@ -125,6 +127,18 @@ function updateDropdown() {
     option.textContent = p.title;
     dropdown.appendChild(option);
   });
+}
+
+function updateNowPlaying() {
+  const nowPlayingEl = document.getElementById('nowPlaying');
+  if (!videoIds.length) {
+    nowPlayingEl.textContent = 'Currently playing: –';
+    return;
+  }
+
+  const current = videoIds[currentIndex];
+  const title = current?.title || 'Unknown Title';
+  nowPlayingEl.textContent = `Currently playing: ${title}`;
 }
 
 function showGIFs() {
@@ -231,6 +245,7 @@ async function loadPlaylist(playlistInput, apiKey, force = false) {
   } catch (err) {
     statusEl.innerText = `Error fetching playlist: ${err.message}`;
   }
+  updateNowPlaying();
 }
 
 // Event listeners
@@ -313,6 +328,7 @@ window.addEventListener('DOMContentLoaded', () => {
   }
   updateDropdown();
 });
+
 
 
 
