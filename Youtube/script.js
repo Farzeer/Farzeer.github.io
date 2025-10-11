@@ -165,35 +165,37 @@ function showGIFs() {
 }
 
 async function fetchPlaylistVideos(playlistId, apiKey) {
-  let ids = [];
-  let nextPage = '';
+  const videos = [];
+  let nextPageToken = '';
   const maxResults = 50;
 
   while (true) {
     try {
-      const url = `https://www.googleapis.com/youtube/v3/playlistItems?part=contentDetails&maxResults=${maxResults}&playlistId=${playlistId}&pageToken=${nextPage}&key=${apiKey}`;
+      const url = `https://www.googleapis.com/youtube/v3/playlistItems?part=snippet,contentDetails&maxResults=${maxResults}&playlistId=${playlistId}${nextPageToken ? `&pageToken=${nextPageToken}` : ''}&key=${apiKey}`;
       const res = await fetch(url);
       const data = await res.json();
 
       if (data.error) throw new Error(data.error.message);
+      if (!data.items || data.items.length === 0) break;
 
       data.items.forEach(item => {
-      const videoId = item?.contentDetails?.videoId;
-      const title = item?.snippet?.title;
-      if (videoId && title && title !== 'Private video' && title !== 'Deleted video') {
-        videos.push({ id: videoId, title });
-      }
-    });
+        const videoId = item?.contentDetails?.videoId;
+        const title = item?.snippet?.title;
+        if (videoId && title && title !== 'Private video' && title !== 'Deleted video') {
+          videos.push({ id: videoId, title });
+        }
+      });
 
       if (!data.nextPageToken) break;
-      nextPage = data.nextPageToken;
+      nextPageToken = data.nextPageToken;
     } catch (err) {
       console.warn('Skipping a page due to error:', err.message);
-      break; // stop fetching if an unexpected error occurs
+      break;
     }
   }
 
-  return ids;
+  console.log(`Fetched ${videos.length} videos for playlist ${playlistId}`);
+  return videos;
 }
 
 async function loadPlaylist(playlistInput, apiKey, force = false) {
@@ -329,6 +331,7 @@ window.addEventListener('DOMContentLoaded', () => {
   }
   updateDropdown();
 });
+
 
 
 
