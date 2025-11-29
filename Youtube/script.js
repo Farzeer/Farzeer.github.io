@@ -46,6 +46,7 @@ function onYouTubeIframeAPIReady() {
         playerReady = true;
         const iframe = player.getIframe();
         iframe.setAttribute('referrerpolicy', 'no-referrer-when-downgrade');
+        player.getIframe().setAttribute('tabindex', '-1');
       },
       'onStateChange': onPlayerStateChange,
       'onError': onPlayerError
@@ -283,6 +284,8 @@ document.getElementById('prevVideo').addEventListener('click', playPrev);
 
 window.addEventListener('keydown', (e) => {
   if (!isPlayerReady()) return;
+  if (document.hidden) return;  
+  if (document.activeElement !== document.body) return;
   
   if (e.code === 'ArrowRight') {
     if (canTriggerAction()) playNext();
@@ -302,16 +305,24 @@ window.addEventListener('keydown', (e) => {
 // Media keys
 if ('mediaSession' in navigator) {
   navigator.mediaSession.setActionHandler('play', () => {
-    if (isPlayerReady()) player.playVideo();
+    setTimeout(() => {
+      if (isPlayerReady()) player.playVideo();
+    }, 0);
   });
   navigator.mediaSession.setActionHandler('pause', () => {
-    if (isPlayerReady()) player.pauseVideo();
+    setTimeout(() => {
+      if (isPlayerReady()) player.pauseVideo();
+    }, 0);
   });
   navigator.mediaSession.setActionHandler('previoustrack', () => {
-    if (isPlayerReady() && canTriggerAction()) playPrev();
+    setTimeout(() => {
+      if (isPlayerReady() && canTriggerAction()) playPrev();
+    }, 0);
   });
   navigator.mediaSession.setActionHandler('nexttrack', () => {
-    if (isPlayerReady() && canTriggerAction()) playNext();
+    setTimeout(() => {
+      if (isPlayerReady() && canTriggerAction()) playNext();
+    }, 0);
   });
 }
 
@@ -331,6 +342,7 @@ window.addEventListener('DOMContentLoaded', () => {
   }
   updateDropdown();
 });
+
 
 
 
