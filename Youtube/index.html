@@ -2,17 +2,26 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <title>Youtube Randomizer</title>
+  <title>YouTube Randomizer</title>
   <link rel="icon" type="image/png" href="favicon.png">
-  <style>
-  #controls { margin-top: 10px; }
-  #cachedPlaylists { margin-top: 10px; }
-  </style>
+
   <style>
     body {
-      background-color: #1e1e1e; /* dark gray */
-      color: #f0f0f0;           /* light text for readability */
+      background-color: #1e1e1e;
+      color: #f0f0f0;
       font-family: Arial, sans-serif;
+    }
+
+    h2 {
+      margin-bottom: 10px;
+    }
+
+    input {
+      margin-right: 4px;
+      padding: 4px;
+      background: #2a2a2a;
+      color: #f0f0f0;
+      border: 1px solid #555;
     }
 
     button {
@@ -28,85 +37,105 @@
     button:hover {
       background: #444;
     }
-  </style>
-  <style>
-  #gif-container .tenor-gif-embed {
+
+    /* ========== LAYOUT ========== */
+
+    #main-container {
+      display: flex;
+      gap: 10px;
+      align-items: flex-start;
+    }
+
+    #player-container {
+      flex: 3;
+    }
+
+    /* Match GIF column height to the video */
+    #gif-container {
+      flex: 1;
+      height: 720px;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      overflow: hidden;
+    }
+
+    /* Each GIF gets 50% height */
+    #gif-container .tenor-gif-embed {
+      flex: 1;
       width: 100%;
-      height: 49%; /* two gifs share the 720px column */
+      display: flex;
+    }
+
+    /* Tenor inserts an iframe → ensure clean scaling */
+    #gif-container iframe {
+      width: 100%;
+      height: 100%;
       object-fit: cover;
-  }
+    }
+
+    /* Controls container across entire player width */
+    #controls {
+      margin-top: 10px;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    #cachedPlaylists {
+      background: #2a2a2a;
+      color: #f0f0f0;
+      border: 1px solid #555;
+      padding: 4px;
+    }
+
+    #nowPlaying {
+      font-size: 1.2em;
+      font-weight: bold;
+      margin-bottom: 8px;
+    }
   </style>
 </head>
+
 <body>
-  <h2>Youtube Randomizer</h2>
+
+  <h2>YouTube Randomizer</h2>
 
   <input id="apiKey" placeholder="Enter YouTube API key">
   <input id="playlistId" placeholder="Enter YouTube Playlist URL or ID">
   <button id="loadPlaylist">Load & Shuffle Playlist</button>
-  <button id="refreshPlaylist">Force Refresh (use only when necessary)</button>
+  <button id="refreshPlaylist">Force Refresh</button>
 
   <div id="status"></div>
-  <div id="nowPlaying" style="
-        text-align: start;
-        font-size: 1.2em;
-        font-weight: bold;
-        margin-bottom: 8px;
-        color: #f0f0f0;
-      ">
-        Currently playing: –
-  </div>
 
-  <div id="main-container" style="display:flex; gap:10px; align-items:flex-start;">
-    
-    <!-- Player + Controls -->
-    <div id="player-container" style="flex:3;">
-        <div id="player"></div>
+  <div id="nowPlaying">Currently playing: –</div>
 
-        <!-- Controls + Playlist Selector in one row -->
-        <div style="
-            display:flex;
-            align-items:center;
-            margin-top:10px;
-            gap:12px;
-        ">
-            <div id="controls">
-                <button id="prevVideo" tabindex="-1">Previous</button>
-                <button id="nextVideo" tabindex="-1">Next</button>
-            </div>
+  <div id="main-container">
 
-            <div>
-                <label for="cachedPlaylists">Switch Playlist:</label>
-                <select id="cachedPlaylists">
-                    <option value="">-- Select cached playlist --</option>
-                </select>
-            </div>
-        </div>
+    <!-- Player -->
+    <div id="player-container">
+      <div id="player"></div>
+
+      <div id="controls">
+        <button id="prevVideo" tabindex="-1">Previous</button>
+        <button id="nextVideo" tabindex="-1">Next</button>
+
+        <label for="cachedPlaylists" style="margin-left:15px;">Switch Playlist:</label>
+        <select id="cachedPlaylists">
+          <option value="">-- Select cached playlist --</option>
+        </select>
+      </div>
     </div>
 
-    <!-- GIFs (auto-resized to match video height) -->
-    <div id="gif-container" style="
-        flex:1;
-        height:720px;
-        display:flex;
-        flex-direction:column;
-        justify-content:space-between;
-    ">
+    <!-- GIFs -->
+    <div id="gif-container">
+      <!-- Filled dynamically -->
     </div>
+
   </div>
 
   <script src="https://www.youtube.com/iframe_api"></script>
   <script src="/Youtube/script.js"></script>
+
 </body>
 </html>
-
-
-
-
-
-
-
-
-
-
-
-
