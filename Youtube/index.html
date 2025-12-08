@@ -29,6 +29,13 @@
       background: #444;
     }
   </style>
+  <style>
+  #gif-container .tenor-gif-embed {
+      width: 100%;
+      height: 49%; /* two gifs share the 720px column */
+      object-fit: cover;
+  }
+  </style>
 </head>
 <body>
   <h2>Youtube Randomizer</h2>
@@ -84,13 +91,6 @@
         flex-direction:column;
         justify-content:space-between;
     ">
-    <style>
-    #gif-container .tenor-gif-embed {
-        width: 100%;
-        height: 49%; /* two gifs share the 720px column */
-        object-fit: cover;
-    }
-    </style>
     </div>
   </div>
 
@@ -98,6 +98,7 @@
   <script src="/Youtube/script.js"></script>
 </body>
 </html>
+
 
 
 
