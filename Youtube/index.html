@@ -49,23 +49,35 @@
         Currently playing: –
   </div>
 
-  <div id="main-container" style="display:flex; gap:10px;">
+  <div id="main-container" style="
+    display: flex;
+    flex-direction: row;
+    align-items: flex-start; 
+    gap: 10px;
+">
     <!-- YouTube player -->
     <div id="player-container" style="flex:3;">
-      <div id="player"></div>
-      
-      <div id="controls" style="margin-top:10px;">
-      <button id="prevVideo" tabindex="-1">Previous</button>
-      <button id="nextVideo" tabindex="-1">Next</button>
-      </div>
+        <div id="player"></div>
+        
+        <div id="controls" style="margin-top:10px;">
+            <button id="prevVideo" tabindex="-1">Previous</button>
+            <button id="nextVideo" tabindex="-1">Next</button>
+        </div>
     </div>
-  
-    <!-- GIF container -->
-    <div id="gif-container" style="flex:1; display:flex; flex-direction:column; gap:10px; max-height:720px; overflow:hidden;">
-      <!-- GIFs will be here hopefully -->
+
+    <!-- GIF container aligned perfectly with top of video -->
+    <div id="gif-container" style="
+        flex:1;
+        height: 720px; 
+        overflow-y: auto; 
+        display: flex;
+        flex-direction: column;
+        gap: 10px;
+        padding-right: 5px;
+    ">
     </div>
   </div>
-
+  
   <div>
     <label for="cachedPlaylists">Switch Playlist:</label>
     <select id="cachedPlaylists">
@@ -77,6 +89,7 @@
   <script src="/Youtube/script.js"></script>
 </body>
 </html>
+
 
 
 
