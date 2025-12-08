@@ -49,32 +49,42 @@
         Currently playing: –
   </div>
 
-  <div id="main-container" style="
-    display: flex;
-    flex-direction: row;
-    align-items: flex-start; 
-    gap: 10px;
-">
-    <!-- YouTube player -->
+  <div id="main-container" style="display:flex; gap:10px; align-items:flex-start;">
+    
+    <!-- Player + Controls -->
     <div id="player-container" style="flex:3;">
         <div id="player"></div>
-        
-        <div id="controls" style="margin-top:10px;">
-            <button id="prevVideo" tabindex="-1">Previous</button>
-            <button id="nextVideo" tabindex="-1">Next</button>
+
+        <!-- Controls + Playlist Selector in one row -->
+        <div style="
+            display:flex;
+            align-items:center;
+            margin-top:10px;
+            gap:12px;
+        ">
+            <div id="controls">
+                <button id="prevVideo" tabindex="-1">Previous</button>
+                <button id="nextVideo" tabindex="-1">Next</button>
+            </div>
+
+            <div>
+                <label for="cachedPlaylists">Switch Playlist:</label>
+                <select id="cachedPlaylists">
+                    <option value="">-- Select cached playlist --</option>
+                </select>
+            </div>
         </div>
     </div>
 
-    <!-- GIF container aligned perfectly with top of video -->
+    <!-- GIFs (auto-resized to match video height) -->
     <div id="gif-container" style="
         flex:1;
-        height: 720px; 
-        overflow-y: auto; 
-        display: flex;
-        flex-direction: column;
-        gap: 10px;
-        padding-right: 5px;
+        height:720px;
+        display:flex;
+        flex-direction:column;
+        justify-content:space-between;
     ">
+        <!-- Filled dynamically -->
     </div>
   </div>
   
