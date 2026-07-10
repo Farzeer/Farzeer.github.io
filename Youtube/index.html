@@ -95,17 +95,91 @@
       font-weight: bold;
       margin-bottom: 8px;
     }
+
+    /* ---------- Top controls ---------- */
+    #top-controls {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 8px;
+        margin-bottom: 10px;
+    }
+    
+    #top-controls input {
+        flex: 1 1 300px;
+    }
+    
+    #top-controls button {
+        white-space: nowrap;
+    }
+    
+    /* Make the player responsive */
+    #player iframe {
+        max-width: 100%;
+    }
+
+    /* ---------- Mobile ---------- */
+    @media (max-width: 900px) {
+    
+        #main-container {
+            flex-direction: column;
+        }
+    
+        #gif-container {
+            width: 100%;
+            height: auto;
+            flex-direction: row;
+            gap: 10px;
+        }
+    
+        #gif-container .tenor-gif-embed {
+            flex: 1;
+            min-height: 180px;
+        }
+    
+        #controls {
+            flex-wrap: wrap;
+        }
+    
+        #cachedPlaylists {
+            width: 100%;
+            margin-top: 8px;
+        }
+    
+        button,
+        input,
+        select {
+            font-size: 16px;
+            padding: 10px;
+        }
+    
+        #player {
+            width: 100% !important;
+        }
+    }
+
+    #player-wrapper {
+      width: 100%;
+      max-width: 1280px;
+      aspect-ratio: 16 / 9;
+    }
+    
+    #player,
+    #player iframe {
+        width: 100% !important;
+        height: 100% !important;
+    }
   </style>
 </head>
 
 <body>
 
   <h2>YouTube Randomizer</h2>
-
-  <input id="apiKey" placeholder="Enter YouTube API key">
-  <input id="playlistId" placeholder="Enter YouTube Playlist URL or ID">
-  <button id="loadPlaylist">Load & Shuffle Playlist</button>
-  <button id="refreshPlaylist">Force Refresh</button>
+  <div id="top-controls">
+    <input id="apiKey" placeholder="Enter YouTube API key">
+    <input id="playlistId" placeholder="Enter YouTube Playlist URL or ID">
+    <button id="loadPlaylist">Load & Shuffle Playlist</button>
+    <button id="refreshPlaylist">Force Refresh</button>
+  </div>
 
   <div id="status"></div>
 
@@ -115,7 +189,9 @@
 
     <!-- Player -->
     <div id="player-container">
-      <div id="player"></div>
+      <div id="player-wrapper">
+        <div id="player"></div>
+      </div>
 
       <div id="controls">
         <button id="prevVideo" tabindex="-1">Previous</button>
