@@ -167,6 +167,8 @@ async function fetchPlaylistVideos(playlistId, apiKey) {
   const videos = [];
   let nextPageToken = '';
   const maxResults = 50;
+  const statusEl = document.getElementById('status');
+  let totalVideos = 0;
 
   while (true) {
     try {
@@ -174,6 +176,10 @@ async function fetchPlaylistVideos(playlistId, apiKey) {
       const res = await fetch(url);
       const data = await res.json();
 
+      if (totalVideos === 0 && data.pageInfo) {
+        totalVideos = data.pageInfo.totalResults;
+      }
+      
       if (data.error) throw new Error(data.error.message);
       if (!data.items || data.items.length === 0) break;
 
@@ -182,6 +188,7 @@ async function fetchPlaylistVideos(playlistId, apiKey) {
         const title = item?.snippet?.title;
         if (videoId && title && title !== 'Private video' && title !== 'Deleted video') {
           videos.push({ id: videoId, title });
+          statusEl.innerText = `Fetching playlist... (${videos.length}/${totalVideos} videos fetched)`;
         }
       });
 
