@@ -6,6 +6,11 @@ const REGISTRY_KEY = 'playlist_registry';
 const API_KEY_STORAGE = 'youtube_api_key';
 let lastActionTime = 0;
 const ACTION_DELAY = 1000; // ms
+let lastPlaybackTime = 0;
+let stalledChecks = 0;
+const MAX_STALLED_CHECKS = 8;
+let reloadAttempts = 0;
+const MAX_RELOADS = 1;
 
 function canTriggerAction() {
   const now = Date.now();
@@ -45,6 +50,7 @@ function onYouTubeIframeAPIReady() {
         const iframe = player.getIframe();
         iframe.setAttribute('referrerpolicy', 'no-referrer-when-downgrade');
         player.getIframe().setAttribute('tabindex', '-1');
+        setInterval(checkPlaybackProgress, 1000);
       },
       'onStateChange': onPlayerStateChange,
       'onError': onPlayerError
@@ -161,6 +167,48 @@ function showGIFs() {
     tenorScript.async = true;
     document.body.appendChild(tenorScript);
   }
+}
+
+function checkPlaybackProgress() {
+    if (!isPlayerReady() || videos.length === 0) return;
+
+    const state = player.getPlayerState();
+
+    if (state !== YT.PlayerState.PLAYING &&
+        state !== YT.PlayerState.BUFFERING) {
+        stalledChecks = 0;
+        return;
+    }
+
+    const currentTime = player.getCurrentTime();
+
+    if (currentTime > lastPlaybackTime + 0.1) {
+        lastPlaybackTime = currentTime;
+        stalledChecks = 0;
+        reloadAttempts = 0;
+        return;
+    }
+
+    stalledChecks++;
+
+    if (stalledChecks >= MAX_STALLED_CHECKS) {
+
+    stalledChecks = 0;
+
+    if (reloadAttempts < MAX_RELOADS) {
+        reloadAttempts++;
+        console.warn(
+            `Playback stalled on ${videos[currentIndex].id}. Reload attempt ${reloadAttempts}/${MAX_RELOADS}`
+        );
+        player.loadVideoById(videos[currentIndex].id);
+        } else {
+            console.warn(
+                `Playback still stalled on ${videos[currentIndex].id}. Skipping.`
+            );
+            reloadAttempts = 0;
+            playNext();
+        }
+    }
 }
 
 async function fetchPlaylistVideos(playlistId, apiKey) {
