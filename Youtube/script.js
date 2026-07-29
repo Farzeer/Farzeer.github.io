@@ -8,9 +8,9 @@ let lastActionTime = 0;
 const ACTION_DELAY = 1000; // ms
 let lastPlaybackTime = 0;
 let stalledChecks = 0;
-const MAX_STALLED_CHECKS = 8;
+const MAX_STALLED_CHECKS = 10;
 let reloadAttempts = 0;
-const MAX_RELOADS = 1;
+const MAX_RELOADS = 2;
 
 function canTriggerAction() {
   const now = Date.now();
